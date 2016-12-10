@@ -30,7 +30,7 @@ public class SentSenseRandom {
 	
 	private static int n = 6;
 	
-	private static int m = 149;
+	private static int m = 150;
 	
 	private static double[][] rndm = new double[n][m];
 
