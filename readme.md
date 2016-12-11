@@ -1,8 +1,8 @@
-# APP_NAME
+# Mellows
 
 Find match music for your script!
 
-This application will allow you to find music in our database that suit the emotion of your script. By using synesketch, your search will get nearly perfect accuracy. Don't wait for long time, just clone and start it.
+Mellows will allow you to find music in our database that suit the emotion of your script. By using synesketch, your search will get nearly perfect accuracy. Don't wait for long time, just clone and start it.
 
 ### Language ###
 - Python 3.4
