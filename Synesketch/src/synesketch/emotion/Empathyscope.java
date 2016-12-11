@@ -79,7 +79,7 @@ public class Empathyscope {
 			/**
 			 * Preprocessing step
 			 */
-			sentence = PreprocessingUtility.preprocessContractions(sentence);
+			sentence = PreprocessingUtility.getInstance().preprocessContractions(sentence);
 			
 			System.out.println("- " + sentence);
 			

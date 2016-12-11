@@ -6,11 +6,13 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import sun.util.locale.StringTokenIterator;
+import synesketch.emotion.AffectWord;
+import synesketch.util.PropertiesManager;
 
 /**
  * Utility class for some text preprocessing
@@ -21,14 +23,33 @@ import sun.util.locale.StringTokenIterator;
  */
 public class PreprocessingUtility {
 
-	private static String fileNameContraction = "src/data/lex/lexicon_contractions.csv";
+	private static PreprocessingUtility instance;
 	
-	public static String preprocessContractions(String sentence) {
+	private String fileNameContraction = "/data/lex/lexicon_contractions.csv";
+	
+	private PreprocessingUtility()  {
+		
+	}
+
+	/**
+	 * Returns the Singleton instance of the {@link LexicalUtility}.
+	 * 
+	 * @return the instance of {@link LexicalUtility}
+	 * @throws IOException
+	 */
+	public static PreprocessingUtility getInstance()  {
+		if (instance == null) {
+			instance = new PreprocessingUtility();
+		}
+		return instance;
+	}
+	
+	public String preprocessContractions(String sentence) {
 		try {
 			
-			BufferedReader in = new BufferedReader(
-					new InputStreamReader(
-		                      new FileInputStream(fileNameContraction), "UTF8"));
+			BufferedReader in = new BufferedReader(new InputStreamReader(this
+					.getClass().getResourceAsStream(fileNameContraction), "UTF8"));
+			
 			String line;
 			String newSentence = sentence.toString();
 			

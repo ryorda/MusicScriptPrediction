@@ -6,6 +6,7 @@
 package test;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
@@ -21,6 +22,7 @@ public class TestSentence {
 		EmotionalState sentenceState = Empathyscope.getInstance().feel(line);
 		ArrayList<Emotion> emotions = (ArrayList<Emotion>) sentenceState.getFirstStrongestEmotions(6);
 		
+		System.out.println(Array.getLength(args));
 		System.out.println("strongest");
 		
 		for (Emotion e : emotions){
