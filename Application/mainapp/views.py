@@ -1,13 +1,12 @@
+from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from . import models
+from . import configs
+from . import processing
 
-import os
-os.environ['CLASSPATH'] = "predictlib.jar"
-os.environ['JAVA_HOME'] = "/usr/lib/jvm/java-8-oracle/"
-
-import jnius
 import json
-import statistics
+import _thread
 
 def index(req) :
 	return render(req, 'mainapp/index.html', None)
@@ -18,35 +17,59 @@ def result(req) :
 		
 		scripttext 	= req.POST['scripttext']
 		
-		empathyscope = jnius.autoclass('synesketch.emotion.Empathyscope').getInstance()
-		emotionalstate = empathyscope.feel(scripttext)
-		emotions = [ \
-			emotionalstate.getAngerWeight(), \
-			emotionalstate.getDisgustWeight(), \
-			emotionalstate.getFearWeight(), \
-			emotionalstate.getHappinessWeight(), \
-			emotionalstate.getSadnessWeight(), \
-			emotionalstate.getSurpriseWeight() \
-		]
-		
-		emotion_names = [ "anger", "disgust", "fear", "happiness", "sadness", "surprise"]
-		normalized_emotion_names = [ "normalizedAnger", "normalizedDisgust", "normalizedFear", "normalizedHappiness", "normalizedSadness", "normalizedSurprise"]
-		
-		vars = { 'text' : scripttext}
-		mean_data = statistics.mean(emotions)
-		std_data = statistics.pstdev(emotions)
-		
-		for i in range(6) :
-			vars[emotion_names[i]] =  "{0:.1f}".format(emotions[i] * 100)
-			if (std_data > 0) :
-				vars[normalized_emotion_names[i]] = (emotions[i] - mean_data)*1.0/std_data
-			else :
-				vars[normalized_emotion_names[i]] = 0
-			
-		# return HttpResponse(json.dumps(vars))
+		vars = processing.findmatchsong(scripttext)
 		print(vars)
+		
 		return render(req, 'mainapp/result.html', vars)
 	else :
 		return redirect('/app/')
 
+
+def entrysong(req) :
+	if (req.method == 'GET' ) :
+		
+		username = req.GET['username']
+		password = req.GET['password']
+		writer = req.GET['writer']
+		singer = req.GET['singer']
+		title = req.GET['title']
+		year = req.GET['year']
+		genre = req.GET['genre']
+		lyric = req.GET['lyric']
+		
+		user = authenticate(username=username, password=password)
+		
+		if (user is None) :
+			return HttpResponse(status = 401, content=json.dumps({'status' : 401, 'message' : 'Unauthorized user'}))
+		
+		if ( (writer is None) or (singer is None) or (title is None) or (year is None) or (genre is None) or (lyric is None) ) :
+			return HttpResponse(status = 400, content=json.dumps({'status' : 400, 'message' : 'Bad request'}))
+		
+		_thread.start_new_thread( processing.addnewsong, (writer, singer, title, year, genre, lyric) )
+		
+		return HttpResponse(status = 200, content=json.dumps({'status' : 200, 'message' : 'OK', 'info' : 'we can\'t make sure the success of database entry'}))
+		
+	else :
+		return HttpResponse(status = 400, content=json.dumps({'status' : 400, 'message' : 'Bad request'}))
+		
+def recomputeall(req) :
+	username = req.GET['username']
+	password = req.GET['password']
 	
+	user = authenticate(username=username, password=password)
+	
+	if (user is None) :
+		return HttpResponse(status = 401, content=json.dumps({'status' : 401, 'message' : 'Unwriterized user'}))
+	
+	if (not configs.isRecomputingAll) :
+		configs.isRecomputingAll = True
+		_thread.start_new_thread( processing.recomputeall , ())
+		return HttpResponse(status = 200, content=json.dumps({'status' : 200, 'message' : 'OK'}))	
+	else :
+		return HttpResponse(status = 102, content=json.dumps({'status' : 102, 'message' : 'Process is running on background'}))
+		
+		
+def debug(req) :
+	user = authenticate(username='-', password='-')
+	configs.recomputeall = False
+	return HttpResponse(status=200, content=json.dumps({'status' : 200, 'message' : 'OK'}))

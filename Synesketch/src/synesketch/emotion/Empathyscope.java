@@ -81,7 +81,7 @@ public class Empathyscope {
 			 */
 			sentence = PreprocessingUtility.getInstance().preprocessContractions(sentence);
 			
-			System.out.println("- " + sentence);
+			// System.out.println("- " + sentence);
 			
 			// we imploy 6 heuristic rules to adjust emotive weights of the
 			// words:
