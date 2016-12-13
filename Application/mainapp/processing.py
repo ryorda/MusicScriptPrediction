@@ -8,6 +8,7 @@ os.environ['JAVA_HOME'] = "/usr/lib/jvm/java-8-oracle/"
 import jnius
 import json
 import statistics
+import math
 
 def findmatchsong(scripttext) :
 	empathyscope = jnius.autoclass('synesketch.emotion.Empathyscope').getInstance()
@@ -42,6 +43,7 @@ def findmatchsong(scripttext) :
 	result = None
 	for es in emotionsongs :
 		euc_dist = get_euclidian_dist(es, normalized_emotions)
+		# print(es.song.title + " : " + str(euc_dist) )
 		if (result is None) :
 			result = [ ( euc_dist , es.song ) ]
 		else :
@@ -49,7 +51,10 @@ def findmatchsong(scripttext) :
 			for i in range(length) :
 				if (result[i][0] > euc_dist ) :
 					result.insert(i, (euc_dist, es.song) )
+					length = 10
 					break
+			if (length < 10) :
+				result.append( (euc_dist, es.song) )
 	
 	vars['result'] = []
 	
@@ -86,9 +91,9 @@ def get_euclidian_dist(emotionalstate, normalized_emotions) :
 			z = ( emotions[i] - mean_data ) * 1.0 / std_data
 		else :
 			z = 0
-		total = total + z - normalized_emotions[i]
+		total = total + (z - normalized_emotions[i])**2
 
-	return total
+	return math.sqrt( total )
 		
 def recomputeall() :
 	configs.isRecomputingAll = True
