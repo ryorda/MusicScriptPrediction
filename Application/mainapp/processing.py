@@ -137,3 +137,12 @@ def addnewsong(writer, singer, title,  year, genre, lyric) :
 		surprise = emotionalstate.getSurpriseWeight() \
 	)
 	
+	result = { 'anger' : emotionalstate.getAngerWeight(), \
+		'disgust' : emotionalstate.getDisgustWeight(), \
+		'fear' : emotionalstate.getFearWeight(), \
+		'happiness' : emotionalstate.getHappinessWeight(), \
+		'sadness' : emotionalstate.getSadnessWeight(), \
+		'surprise' : emotionalstate.getSurpriseWeight() }
+		
+	return result
+	

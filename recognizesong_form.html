@@ -1,0 +1,78 @@
+<html>
+
+<head>
+
+</head>
+
+<body>
+	<script
+	  src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	
+	<div>
+		<table>
+			<tr>
+				<td> username </td>
+				<td> <input size=32 type='text' name='username' id="username" /> </td>
+			</tr>
+			<tr>
+				<td> password </td>
+				<td> <input size=32 type='text' name='password' id="password" /> </td>
+			</tr>
+			<tr>
+				<td> title </td>
+				<td> <input size=32 type='text' name='title' id="title" /> </td>
+			</tr>
+			<tr>
+				<td> singer </td>
+				<td> <input size=32 type='text' name='singer' id="singer" /> </td>
+			</tr>
+			<tr>
+				<td> year </td>
+				<td> <input size=32 type='number' name='year' id="year" /> </td>
+			</tr>
+			<tr>
+				<td> genre </td>
+				<td> <input size=32 type='text' name='genre' id="genre" /> </td>
+			</tr>
+			<tr>
+				<td> writer </td>
+				<td> <input size=32 type='text' name='writer' id="writer" /> </td>
+			</tr>
+			<tr>
+				<td> lyric </td>
+				<td> <textarea rows=16 cols=48 name='lyric' id="lyric" > </textarea> </td>
+			</tr>
+		</table>
+		<button id="submit"> Submit </button>
+	</div>
+	
+	<p> Link : http://localhost/app/api/recognize/song </p>
+	<p> Method : GET </p>
+	<p id="message" > </p>
+	<script>
+	
+		$(document).ready(function(){
+			$('#submit').click(function(){ $.ajax({
+					type: "GET",
+					url: "http://localhost/app/api/recognize/song",
+					data: {
+						username : $('#username').val() ,
+						password : $('#password').val() ,
+						title :  $('#title').val() ,
+						singer :  $('#singer').val() ,
+						genre :  $('#genre').val() ,
+						writer :  $('#writer').val() ,
+						year :  $('#year').val() ,
+						lyric : $('#lyric').val() 
+					},	  
+					success: function(data){ $('#message').html( 'Result : <br> ' + JSON.stringify(data) ) },
+					error: function(err){ $('#message').html( 'Result : <br> ' + JSON.stringify(err) ) }, 
+					dataType: "json"	
+				});
+			}); 
+		})	
+		
+	</script>
+</body>
+
+</html>

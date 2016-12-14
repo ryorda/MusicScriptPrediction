@@ -7,5 +7,6 @@ urlpatterns = [
 	url(r'^result/?', views.result, name='result'),
 	url(r'^api/recomputeall/?', views.recomputeall, name='recomputeall'),
 	url(r'^api/entry/song/?', views.entrysong, name='entrysong'),
+	url(r'^api/recognize/song?', views.recognizesong, name='recognizesong'),
 	url(r'^debug/?', views.debug, name='debug')
 ]
